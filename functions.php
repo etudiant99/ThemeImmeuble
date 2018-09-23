@@ -136,7 +136,7 @@ function sf_check_rememberme(){
 add_action("login_form", "sf_check_rememberme");
 
 
-function installer() {
+function installe() {
 
 	$labels = array(
 		'name' => __( 'Hébergements', 'plugin_hebergement' ),
@@ -170,19 +170,19 @@ function installer() {
 		'map_meta_cap' => true,
 		'query_var' => true,
 		'menu_icon' => 'dashicons-admin-multisite',				
-		'register_meta_box_cb' => 'ajouter_mets_box',
+		'register_meta_box_cb' => 'ajoute_mets_box',
 		'taxonomies' => array( 'typology' )
 	);
 	register_post_type( 'hebergement', $args );
-	add_shortcode( 'formulaire_de_recherche', 'formulaire_de_recherche' );
+	add_shortcode( 'formulaire_de_recherche', 'le_formulaire_de_recherche' );
 }
 
-add_action( 'init', 'installer' );
+add_action( 'init', 'installe' );
 
 /**
  * Enregistrer la taxonomie personnalisée
  */
-function enregistrer_taxonomies_personalisees() {
+function enregistre_taxonomies_personalisees() {
 
 	$labels = array(
 		'name' => __( 'Typologies', 'plugin_hebergement' ),
@@ -205,20 +205,20 @@ function enregistrer_taxonomies_personalisees() {
 	register_taxonomy( 'typology', array( 'hebergement' ), $args );
 } 
 
-add_action( 'init', 'enregistrer_taxonomies_personalisees' );
+add_action( 'init', 'enregistre_taxonomies_personalisees' );
 
 /**
  * Ajouter des boîtes de méta personnalisées
  */
-function ajouter_mets_box(){
-	add_meta_box( 'fonctionalites_meta_box', __( 'Caractéristiques', 'plugin_hebergement' ), 'construire_fonctionalites_meta_box', 'hebergement', 'side' );
-	add_meta_box( 'emplacement_meta_box', __( 'Prix & emplacement', 'plugin_hebergement' ), 'construire_emplacement_meta_box', 'hebergement', 'normal' );
+function ajoute_mets_box(){
+	add_meta_box( 'fonctionalites_meta_box', __( 'Caractéristiques', 'plugin_hebergement' ), 'construit_fonctionalites_meta_box', 'hebergement', 'side' );
+	add_meta_box( 'emplacement_meta_box', __( 'Prix & emplacement', 'plugin_hebergement' ), 'construit_emplacement_meta_box', 'hebergement', 'normal' );
 }
 
 /**
  * Afficher boîte de méta personnalisée
  */
-function construire_fonctionalites_meta_box( $post ){
+function construit_fonctionalites_meta_box( $post ){
 	// assurez-vous que la demande de formulaire provient de WordPress
 	wp_nonce_field( basename( __FILE__ ), 'fonctionalites_meta_box' );
 	// récupérer les valeurs de champs actuels
@@ -276,7 +276,7 @@ function construire_fonctionalites_meta_box( $post ){
 /**
  * Afficher la boîte de méta personnalisée
  */
-function construire_emplacement_meta_box( $post ){
+function construit_emplacement_meta_box( $post ){
 
     global $post;
     $image_src = '';
@@ -375,7 +375,7 @@ function construire_emplacement_meta_box( $post ){
 /**
  * Stocker des données de boîte de méta personnalisées
  */
-function enregistrer_donnees_meta_box( $post_id ){
+function enregistre_donnees_meta_box( $post_id ){
 	// vérifier la première boîte de méta personalisée
 	if ( !isset( $_POST['fonctionalites_meta_box'] ) || !wp_verify_nonce( $_POST['fonctionalites_meta_box'], basename( __FILE__ ) ) ){
 		return;
@@ -420,13 +420,13 @@ function enregistrer_donnees_meta_box( $post_id ){
     }
 
 }
-add_action( 'save_post', 'enregistrer_donnees_meta_box' );
+add_action( 'save_post', 'enregistre_donnees_meta_box' );
 
 /**
  * Enregistrer des variables de requête personnalisés
  *
  */
-function enregistrer_query_vars( $vars ) {
+function enregistre_query_vars( $vars ) {
     $vars[] = 'prix';
     $vars[] = 'grandeur';
     $vars[] = 'type';
@@ -434,7 +434,7 @@ function enregistrer_query_vars( $vars ) {
     $vars[] = 'pays';
     return $vars;
 } 
-add_filter( 'query_vars', 'enregistrer_query_vars' );
+add_filter( 'query_vars', 'enregistre_query_vars' );
 
 /**
  * Construire une requête personnalisée en fonction de plusieurs conditions
@@ -442,7 +442,7 @@ add_filter( 'query_vars', 'enregistrer_query_vars' );
  * toutes les modifications apportées à $query sont effectuées directement sur l'objet d'origine - aucune valeur de retour n'est demandée
  *
  */
-function pre_get_posts( $query ) {
+function methode_pre_get_posts( $query ) {
 	// vérifier si l'utilisateur demande une page d'administration 
 	// ou la requête en cours n'est pas la requête principale
 	if ( is_admin() || ! $query->is_main_query() ){
@@ -481,12 +481,12 @@ function pre_get_posts( $query ) {
     	$query->set( 'meta_query', $meta_query );
     }
 }
-add_action( 'pre_get_posts', 'pre_get_posts', 1 );
+add_action( 'methode_pre_get_posts', 'pre_get_posts', 1 );
 
 /**
  * Créer un formulaire de recherche
  */
-function formulaire_de_recherche( $args ){
+function le_formulaire_de_recherche( $args ){
 
 	// La requête
     // meta_query attend des tableaux imbriqués, même si vous n'avez qu'une seule requête
